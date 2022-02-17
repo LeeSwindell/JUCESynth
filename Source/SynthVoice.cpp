@@ -24,6 +24,8 @@ void SynthVoice::startNote (int midiNoteNumber, float velocity, juce::Synthesise
 void SynthVoice::stopNote (float velocity, bool allowTailOff)
 {
     adsr.noteOff();
+    if (! allowTailOff || ! isVoiceActive())
+        clearCurrentNote();
 };
 void SynthVoice::controllerMoved (int controllerNumber, int newControllerValue)
 {
@@ -56,12 +58,27 @@ void SynthVoice::renderNextBlock (juce::AudioBuffer<float> &outputBuffer, int st
 {
     jassert(isPrepared);
     
-    juce::dsp::AudioBlock<float> audioBlock { outputBuffer };
+    if (! isVoiceActive())
+        return;
+    
+    synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
+    //optional params are: bool keepExistingContent=false, bool clearExtraSpace=false, bool avoidReallocating=false
+    synthBuffer.clear();
+    
+    juce::dsp::AudioBlock<float> audioBlock { synthBuffer };
     osc.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
     gain.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
     
-    adsr.applyEnvelopeToBuffer(outputBuffer, startSample, numSamples);
-    /*The audio block is actually just an alias for the output buffer,
-      so processing the osc and gain in the audio block will still be affected
-      when the envelope is applied to the output buffer later */
+    adsr.applyEnvelopeToBuffer(synthBuffer, 0, synthBuffer.getNumSamples());
+    
+    for (int channel = 0; channel < outputBuffer.getNumChannels(); ++channel)
+    {
+        outputBuffer.addFrom(channel, startSample, synthBuffer, channel, 0, numSamples);
+        if (! adsr.isActive())
+            clearCurrentNote();
+    }
+    
+    /*Takes all new information (notes that are played or stopped during the render block)
+      and adds it to the existing audio output buffer via the intermediary synthBuffer.
+      this prevents clicks compared to updating the whole output buffer in the render block*/
 };

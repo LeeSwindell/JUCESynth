@@ -16,6 +16,14 @@ Synth1AudioProcessorEditor::Synth1AudioProcessorEditor (Synth1AudioProcessor& p)
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (400, 300);
+    
+    using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
+    
+    attackAttachment = std::make_unique<SliderAttachment>(audioProcessor.apvts, "ATT", attackSlider);
+    decayAttachment = std::make_unique<SliderAttachment>(audioProcessor.apvts, "DEC", decaySlider);
+    sustainAttachment = std::make_unique<SliderAttachment>(audioProcessor.apvts, "SUS", sustainSlider);
+    releaseAttachment = std::make_unique<SliderAttachment>(audioProcessor.apvts, "REL", releaseSlider);
+    oscAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "OSC", oscSelector);
 }
 
 Synth1AudioProcessorEditor::~Synth1AudioProcessorEditor()
