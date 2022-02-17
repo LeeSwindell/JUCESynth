@@ -19,7 +19,8 @@ Synth1AudioProcessor::Synth1AudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
+        apvts(*this, nullptr, "Parameters", createParameters())
 #endif
 {
     synth.addSound(new SynthSound());
@@ -198,4 +199,15 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 }
 
 //==============================================================================
-//Value Tree
+juce::AudioProcessorValueTreeState::ParameterLayout Synth1AudioProcessor::createParameters()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    
+    params.push_back(std::make_unique<juce::AudioParameterChoice> ("OSC", "Oscillator", juce::StringArray { "Sin", "Saw", "Square" }, 0));
+    params.push_back(std::make_unique<juce::AudioParameterFloat> ("ATT", "Attack", juce::NormalisableRange<float> { 0.1f, 1.0f }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat> ("DEC", "Decay", juce::NormalisableRange<float> { 0.1f, 1.0f }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat> ("SUS", "Sustain", juce::NormalisableRange<float> { 0.1f, 1.0f }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat> ("REL", "Release", juce::NormalisableRange<float> { 0.1f, 1.0f }, 0.1f));
+        
+    return { params.begin(), params.end() };
+}
