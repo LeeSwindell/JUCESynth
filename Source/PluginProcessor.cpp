@@ -156,13 +156,14 @@ void Synth1AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
         {
-            //Oscillator controls
             //LFO
+            auto& oscWavetype = *apvts.getRawParameterValue("OSC");
             auto& attack = *apvts.getRawParameterValue("ATT");
             auto& decay = *apvts.getRawParameterValue("DEC");
             auto& sustain = *apvts.getRawParameterValue("SUS");
             auto& release = *apvts.getRawParameterValue("REL");
-            
+
+            voice->getOscillator().setWavetype(oscWavetype);
             voice->updateADSR(attack.load(), decay.load(), sustain.load(), release.load());
         }
     }
@@ -207,7 +208,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout Synth1AudioProcessor::create
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
-    params.push_back(std::make_unique<juce::AudioParameterChoice> ("OSC", "Oscillator", juce::StringArray { "Sin", "Saw", "Square" }, 0));
+    params.push_back(std::make_unique<juce::AudioParameterChoice> ("OSC", "Oscillator", juce::StringArray { "Sine", "Saw", "Square" }, 0));
     params.push_back(std::make_unique<juce::AudioParameterFloat> ("ATT", "Attack", juce::NormalisableRange<float> { 0.1f, 1.0f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterFloat> ("DEC", "Decay", juce::NormalisableRange<float> { 0.1f, 1.0f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterFloat> ("SUS", "Sustain", juce::NormalisableRange<float> { 0.1f, 1.0f }, 1.0f));

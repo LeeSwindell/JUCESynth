@@ -29,6 +29,10 @@ Synth1AudioProcessorEditor::Synth1AudioProcessorEditor (Synth1AudioProcessor& p)
     createSliderSettings(decaySlider);
     createSliderSettings(sustainSlider);
     createSliderSettings(releaseSlider);
+    addAndMakeVisible(oscSelector);
+    oscSelector.addItem("Sine", 1);
+    oscSelector.addItem("Saw", 2);
+    oscSelector.addItem("Square", 3);
 }
 
 Synth1AudioProcessorEditor::~Synth1AudioProcessorEditor()
@@ -48,10 +52,11 @@ void Synth1AudioProcessorEditor::paint (juce::Graphics& g)
 void Synth1AudioProcessorEditor::resized()
 {
 //    auto bounds = getLocalBounds().reduced(10);
-    attackSlider.setBounds(0, 20, 400, 40);
-    decaySlider.setBounds(0, 60, 400, 40);
-    sustainSlider.setBounds(0, 100, 400, 40);
-    releaseSlider.setBounds(0, 140, 400, 40);
+    attackSlider.setBounds(0, 20, 300, 40);
+    decaySlider.setBounds(0, 60, 300, 40);
+    sustainSlider.setBounds(0, 100, 300, 40);
+    releaseSlider.setBounds(0, 140, 300, 40);
+    oscSelector.setBounds(350, 200, 100, 100);
 }
 
 void Synth1AudioProcessorEditor::createSliderSettings(juce::Slider& slider)

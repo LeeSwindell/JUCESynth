@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 #include "SynthSound.h"
+#include "OscData.h"
 
 class SynthVoice : public juce::SynthesiserVoice
 {
@@ -25,6 +26,8 @@ public:
     void updateADSR (const float attack, const float decay, const float sustain, const float release);
     void renderNextBlock (juce::AudioBuffer<float> &outputBuffer, int startSample, int numSamples) override;
     
+    OscData& getOscillator() { return osc; };
+    
 //    bool isVoiceActive () const override;
 //    void aftertouchChanged (int newAftertouchValue) override;
 //    void channelPressureChanged (int newChannelPressureValue) override;
@@ -35,11 +38,9 @@ private:
     
     juce::AudioBuffer<float> synthBuffer;
     
-    juce::dsp::Oscillator<float> osc { [](float x) { return std::sin(x); }};
+    OscData osc;
+//    juce::dsp::Oscillator<float> osc { [](float x) { return x / juce::MathConstants<float>::pi; }};
     juce::dsp::Gain<float> gain;
     bool isPrepared { false };
-    
-    //return std::sin(x); //Sine Wave
-    //return x / MathConstants<float>::pi; //Sawtooth Wave
-    //return x < 0.0f ? -1.0f : 1.0f; //Square Wave
+
 };
