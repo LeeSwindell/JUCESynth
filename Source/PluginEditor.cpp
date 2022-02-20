@@ -15,7 +15,7 @@ Synth1AudioProcessorEditor::Synth1AudioProcessorEditor (Synth1AudioProcessor& p)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    setSize (600, 450);
     
     using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     
@@ -24,6 +24,11 @@ Synth1AudioProcessorEditor::Synth1AudioProcessorEditor (Synth1AudioProcessor& p)
     sustainAttachment = std::make_unique<SliderAttachment>(audioProcessor.apvts, "SUS", sustainSlider);
     releaseAttachment = std::make_unique<SliderAttachment>(audioProcessor.apvts, "REL", releaseSlider);
     oscAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "OSC", oscSelector);
+    
+    createSliderSettings(attackSlider);
+    createSliderSettings(decaySlider);
+    createSliderSettings(sustainSlider);
+    createSliderSettings(releaseSlider);
 }
 
 Synth1AudioProcessorEditor::~Synth1AudioProcessorEditor()
@@ -37,12 +42,20 @@ void Synth1AudioProcessorEditor::paint (juce::Graphics& g)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
     g.setColour (juce::Colours::white);
-    g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
+    
 }
 
 void Synth1AudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
+//    auto bounds = getLocalBounds().reduced(10);
+    attackSlider.setBounds(0, 20, 400, 40);
+    decaySlider.setBounds(0, 60, 400, 40);
+    sustainSlider.setBounds(0, 100, 400, 40);
+    releaseSlider.setBounds(0, 140, 400, 40);
+}
+
+void Synth1AudioProcessorEditor::createSliderSettings(juce::Slider& slider)
+{
+    slider.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
+    addAndMakeVisible(slider);
 }
