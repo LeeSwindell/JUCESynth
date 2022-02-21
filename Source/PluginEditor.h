@@ -36,6 +36,8 @@ private:
     juce::Slider sustainSlider;
     juce::Slider releaseSlider;
     juce::ComboBox oscSelector;
+    juce::Slider fmFreqSlider;
+    juce::Slider fmDepthSlider;
     
     using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     
@@ -44,6 +46,8 @@ private:
     std::unique_ptr<SliderAttachment> sustainAttachment;
     std::unique_ptr<SliderAttachment> releaseAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> oscAttachment;
+    std::unique_ptr<SliderAttachment> fmFreqAttachment;
+    std::unique_ptr<SliderAttachment> fmDepthAttachment;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Synth1AudioProcessorEditor)
 };

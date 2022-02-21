@@ -24,6 +24,8 @@ Synth1AudioProcessorEditor::Synth1AudioProcessorEditor (Synth1AudioProcessor& p)
     sustainAttachment = std::make_unique<SliderAttachment>(audioProcessor.apvts, "SUS", sustainSlider);
     releaseAttachment = std::make_unique<SliderAttachment>(audioProcessor.apvts, "REL", releaseSlider);
     oscAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "OSC", oscSelector);
+    fmFreqAttachment = std::make_unique<SliderAttachment>(audioProcessor.apvts, "FMFREQ", fmFreqSlider);
+    fmDepthAttachment = std::make_unique<SliderAttachment>(audioProcessor.apvts, "FMDEPTH", fmDepthSlider);
     
     createSliderSettings(attackSlider);
     createSliderSettings(decaySlider);
@@ -33,6 +35,8 @@ Synth1AudioProcessorEditor::Synth1AudioProcessorEditor (Synth1AudioProcessor& p)
     oscSelector.addItem("Sine", 1);
     oscSelector.addItem("Saw", 2);
     oscSelector.addItem("Square", 3);
+    createSliderSettings(fmFreqSlider);
+    createSliderSettings(fmDepthSlider);
 }
 
 Synth1AudioProcessorEditor::~Synth1AudioProcessorEditor()
@@ -56,7 +60,9 @@ void Synth1AudioProcessorEditor::resized()
     decaySlider.setBounds(0, 60, 300, 40);
     sustainSlider.setBounds(0, 100, 300, 40);
     releaseSlider.setBounds(0, 140, 300, 40);
-    oscSelector.setBounds(350, 200, 100, 100);
+    oscSelector.setBounds(350, 200, 50, 50);
+    fmFreqSlider.setBounds(0, 180, 200, 40);
+    fmDepthSlider.setBounds(0, 220, 200, 40);
 }
 
 void Synth1AudioProcessorEditor::createSliderSettings(juce::Slider& slider)

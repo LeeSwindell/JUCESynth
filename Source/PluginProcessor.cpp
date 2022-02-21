@@ -156,14 +156,16 @@ void Synth1AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
         {
-            //LFO
             auto& oscWavetype = *apvts.getRawParameterValue("OSC");
             auto& attack = *apvts.getRawParameterValue("ATT");
             auto& decay = *apvts.getRawParameterValue("DEC");
             auto& sustain = *apvts.getRawParameterValue("SUS");
             auto& release = *apvts.getRawParameterValue("REL");
+            auto& fmFreq = *apvts.getRawParameterValue("FMFREQ");
+            auto& fmDepth = *apvts.getRawParameterValue("FMDEPTH");
 
             voice->getOscillator().setWavetype(oscWavetype);
+            voice->getOscillator().setFMParams(fmFreq, fmDepth);
             voice->updateADSR(attack.load(), decay.load(), sustain.load(), release.load());
         }
     }
@@ -208,11 +210,18 @@ juce::AudioProcessorValueTreeState::ParameterLayout Synth1AudioProcessor::create
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
+    //Osc1 Selector
     params.push_back(std::make_unique<juce::AudioParameterChoice> ("OSC", "Oscillator", juce::StringArray { "Sine", "Saw", "Square" }, 0));
+    
+    //ADSR
     params.push_back(std::make_unique<juce::AudioParameterFloat> ("ATT", "Attack", juce::NormalisableRange<float> { 0.1f, 1.0f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterFloat> ("DEC", "Decay", juce::NormalisableRange<float> { 0.1f, 1.0f }, 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterFloat> ("SUS", "Sustain", juce::NormalisableRange<float> { 0.1f, 1.0f }, 1.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat> ("REL", "Release", juce::NormalisableRange<float> { 0.1f, 3.0f }, 0.4f));
-        
+    
+    //FM
+    params.push_back(std::make_unique<juce::AudioParameterFloat> ("FMFREQ", "FM Frequency", juce::NormalisableRange<float> { 0.0f, 1000.0f }, 5.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat> ("FMDEPTH", "FM Depth", juce::NormalisableRange<float> { 0.0f, 1000.0f }, 500.0f));
+    
     return { params.begin(), params.end() };
 }
