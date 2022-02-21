@@ -21,7 +21,10 @@ enum Wavetypes
 class OscData : public juce::dsp::Oscillator<float>
 {
 public:
+    void prepareToPlay(juce::dsp::ProcessSpec& spec);
     void setWavetype(const int wavetype);
+    void setWaveFrequency(const int midiNoteNumber);
+    void getNextAudioBlock(juce::dsp::AudioBlock<float>& audioBlock);
     
 private:
     
